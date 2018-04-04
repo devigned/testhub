@@ -10,6 +10,7 @@ import (
 	"github.com/Azure/azure-event-hubs-go"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/opentracing/opentracing-go"
 )
 
 func init() {
@@ -54,6 +55,8 @@ var (
 				event := eventhub.NewEvent(data)
 
 				ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+				span, ctx := opentracing.StartSpanFromContext(ctx, "cmd_send")
+				span.SetTag("martin", "foo bazz")
 				err = hub.Send(ctx, event)
 				if err != nil {
 					log.Errorln(fmt.Sprintf("failed sending idx: %d", i), err)
@@ -61,6 +64,7 @@ var (
 					sentMsgs++
 				}
 				cancel()
+				span.Finish()
 			}
 
 			log.Printf("sent %d messages\n", sentMsgs)

@@ -13,6 +13,8 @@ import (
 	"github.com/Azure/azure-event-hubs-go"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/opentracing/opentracing-go"
+	"reflect"
 )
 
 type (
@@ -63,9 +65,10 @@ var (
 				handlers[idx] = messageHandler{partitionID: partitionID}
 			}
 
+			closeHandles := make([]*eventhub.ListenerHandle, len(runtimeInfo.PartitionIDs))
 			for idx, partitionID := range runtimeInfo.PartitionIDs {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-				_, err := hub.Receive(
+				handle, err := hub.Receive(
 					ctx,
 					partitionID,
 					handlers[idx].handle,
@@ -76,13 +79,20 @@ var (
 					log.Errorln(err)
 					return
 				}
+				closeHandles[idx] = handle
 			}
 
 			// Wait for a signal to quit:
-			fmt.Println("=> ctrl+c to exit")
 			signalChan := make(chan os.Signal, 1)
 			signal.Notify(signalChan, os.Interrupt, os.Kill)
-			<-signalChan
+
+			cases := make([]reflect.SelectCase, len(closeHandles))
+			for i, ch := range closeHandles {
+				cases[i] = reflect.SelectCase{Dir: reflect.SelectRecv, Chan: reflect.ValueOf(ch.Done())}
+			}
+			cases = append(cases, reflect.SelectCase{Dir: reflect.SelectRecv, Chan: reflect.ValueOf(signalChan)})
+			fmt.Println("=> ctrl+c to exit")
+			_, _, _ = reflect.Select(cases)
 			hub.Close()
 			return
 		},
@@ -90,6 +100,10 @@ var (
 )
 
 func (m *messageHandler) handle(ctx context.Context, event *eventhub.Event) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "cmd_handle")
+	defer span.Finish()
+
+	span.SetTag("martin", "hello world!")
 	atomic.AddInt64(&m.counter, 1)
 	msg := fmt.Sprintf("message count of %d for partition %q", m.counter, m.partitionID)
 	log.Println(msg)

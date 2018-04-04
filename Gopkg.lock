@@ -18,13 +18,16 @@
   version = "v0.2.4"
 
 [[projects]]
+  branch = "opentracing"
   name = "github.com/Azure/azure-event-hubs-go"
   packages = [
     ".",
+    "internal/tracing",
+    "log",
     "mgmt"
   ]
-  revision = "f24c137e6cee629a615e1efd0366c5f4bb0aa613"
-  version = "v0.1.2"
+  revision = "dbea4455721a67ae0692fecfbf2d53180cee4fea"
+  source = "github.com/devigned/azure-event-hubs-go"
 
 [[projects]]
   name = "github.com/Azure/go-autorest"
@@ -34,8 +37,26 @@
     "autorest/azure",
     "autorest/date"
   ]
-  revision = "ed4b7f5bf1ec0c9ede1fda2681d96771282f2862"
-  version = "v10.4.0"
+  revision = "90128b0cbed977972cdf104474875758e9fe97d0"
+  version = "v10.5.1"
+
+[[projects]]
+  name = "github.com/apache/thrift"
+  packages = ["lib/go/thrift"]
+  revision = "b2a4d4ae21c789b689dd162deb819665567f481c"
+  version = "0.10.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/beorn7/perks"
+  packages = ["quantile"]
+  revision = "3a771d992973f24aa725d07868b467d1ddfceafb"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/codahale/hdrhistogram"
+  packages = ["."]
+  revision = "3a0bb77429bd3a61596f5e8a3172445844342120"
 
 [[projects]]
   name = "github.com/dgrijalva/jwt-go"
@@ -44,10 +65,22 @@
   version = "v3.2.0"
 
 [[projects]]
+  name = "github.com/golang/protobuf"
+  packages = ["proto"]
+  revision = "925541529c1fa6821df4e44ce2723319eb2be768"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/inconshreveable/mousetrap"
   packages = ["."]
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
   version = "v1.0"
+
+[[projects]]
+  name = "github.com/matttproud/golang_protobuf_extensions"
+  packages = ["pbutil"]
+  revision = "3247c84500bff8d9fb6d579d800f20b3e091582c"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
@@ -56,10 +89,53 @@
   revision = "00c29f56e2386353d58c599509e8dc3801b0d716"
 
 [[projects]]
+  name = "github.com/opentracing/opentracing-go"
+  packages = [
+    ".",
+    "ext",
+    "log"
+  ]
+  revision = "1949ddbfd147afd4d964a9f00b24eb291e0e7c38"
+  version = "v1.0.2"
+
+[[projects]]
   name = "github.com/pkg/errors"
   packages = ["."]
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
+
+[[projects]]
+  name = "github.com/prometheus/client_golang"
+  packages = ["prometheus"]
+  revision = "c5b7fccd204277076155f10851dad72b76a49317"
+  version = "v0.8.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/prometheus/client_model"
+  packages = ["go"]
+  revision = "99fa1f4be8e564e8a6b613da7fa6f46c9edafc6c"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/prometheus/common"
+  packages = [
+    "expfmt",
+    "internal/bitbucket.org/ww/goautoneg",
+    "model"
+  ]
+  revision = "38c53a9f4bfcd932d1b00bfc65e256a7fba6b37a"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/prometheus/procfs"
+  packages = [
+    ".",
+    "internal/util",
+    "nfs",
+    "xfs"
+  ]
+  revision = "780932d4fbbe0e69b84c34c20f5c8d0981e109ea"
 
 [[projects]]
   name = "github.com/sirupsen/logrus"
@@ -80,6 +156,36 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/uber/jaeger-client-go"
+  packages = [
+    ".",
+    "config",
+    "internal/baggage",
+    "internal/baggage/remote",
+    "internal/spanlog",
+    "internal/throttler",
+    "log",
+    "rpcmetrics",
+    "thrift-gen/agent",
+    "thrift-gen/baggage",
+    "thrift-gen/jaeger",
+    "thrift-gen/sampling",
+    "thrift-gen/zipkincore",
+    "utils"
+  ]
+  revision = "c107110d057826281414cb964f167bce5be17588"
+  version = "v2.12.0"
+
+[[projects]]
+  name = "github.com/uber/jaeger-lib"
+  packages = [
+    "metrics",
+    "metrics/prometheus"
+  ]
+  revision = "4267858c0679cd4e47cefed8d7f70fd386cfb567"
+  version = "v1.4.0"
+
+[[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
   packages = [
@@ -87,7 +193,13 @@
     "pkcs12/internal/rc2",
     "ssh/terminal"
   ]
-  revision = "88942b9c40a4c9d203b82b3731787b672d6e809b"
+  revision = "b2aa35443fbc700ab74c586ae79b81c171851023"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["context"]
+  revision = "b3c676e531a6dc479fa1b35ac961c13f5e2b4d2e"
 
 [[projects]]
   branch = "master"
@@ -96,20 +208,20 @@
     "unix",
     "windows"
   ]
-  revision = "378d26f46672a356c46195c28f61bdb4c0a781dd"
+  revision = "1d206c9fa8975fb4cf00df1dc8bf3283dc24ba0e"
 
 [[projects]]
-  branch = "master"
   name = "pack.ag/amqp"
   packages = [
     ".",
     "internal/testconn"
   ]
-  revision = "7ff561750e9f8f09d73b1d99a27a6d999cba2bcc"
+  revision = "fba4c617049c3049d8bc7ba9879daca1a1a2044e"
+  version = "v0.4.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "95da35d913e8ef961a70e8d4eeb544640dfdb5fbe6d786aaac390643ffa728e6"
+  inputs-digest = "5e08d3fa3031f4cbbcc66824d56da0fa88d0170af79e4530c4891d4a68424e89"
   solver-name = "gps-cdcl"
   solver-version = 1
