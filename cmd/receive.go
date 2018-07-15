@@ -5,16 +5,16 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"reflect"
 	"sync"
 	"sync/atomic"
 	"time"
 
 	"github.com/Azure/azure-amqp-common-go/sas"
 	"github.com/Azure/azure-event-hubs-go"
+	"github.com/opentracing/opentracing-go"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/opentracing/opentracing-go"
-	"reflect"
 )
 
 type (
@@ -41,7 +41,7 @@ var (
 			return checkAuthFlags()
 		},
 		Run: func(cmd *cobra.Command, args []string) {
-			provider, err := sas.NewTokenProvider(sas.TokenProviderWithNamespaceAndKey(namespace, sasKeyName, sasKey))
+			provider, err := sas.NewTokenProvider(sas.TokenProviderWithKey(sasKeyName, sasKey))
 			if err != nil {
 				log.Error(err)
 				return
@@ -53,8 +53,8 @@ var (
 			}
 
 			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancel()
 			runtimeInfo, err := hub.GetRuntimeInformation(ctx)
-			cancel()
 			if err != nil {
 				log.Errorln(err)
 				return
@@ -93,7 +93,7 @@ var (
 			cases = append(cases, reflect.SelectCase{Dir: reflect.SelectRecv, Chan: reflect.ValueOf(signalChan)})
 			fmt.Println("=> ctrl+c to exit")
 			_, _, _ = reflect.Select(cases)
-			hub.Close()
+			hub.Close(context.Background())
 			return
 		},
 	}

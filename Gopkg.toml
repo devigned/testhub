@@ -26,24 +26,19 @@
 
 [[constraint]]
   name = "github.com/Azure/azure-event-hubs-go"
-  branch = "opentracing"
-  source = "github.com/devigned/azure-event-hubs-go"
+  version = "0.4"
 
 [[constraint]]
   name = "github.com/Azure/go-autorest"
-  version = "10.4.0"
-
-[[constraint]]
-  name = "github.com/pkg/errors"
-  version = "0.8.0"
+  version = "10"
 
 [[constraint]]
   name = "github.com/sirupsen/logrus"
-  version = "1.0.5"
+  version = "1"
 
 [[constraint]]
   name = "github.com/spf13/cobra"
-  version = "0.0.2"
+  version = "0"
 
 [prune]
   go-tests = true

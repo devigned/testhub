@@ -1,12 +1,12 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
 	"github.com/Azure/azure-amqp-common-go/conn"
 	"github.com/Azure/go-autorest/autorest/azure"
-	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )

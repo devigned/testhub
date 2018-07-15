@@ -19,3 +19,5 @@ vendor
 .DS_Store
 bin
 .idea
+
+output

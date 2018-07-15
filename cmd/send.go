@@ -8,9 +8,9 @@ import (
 
 	"github.com/Azure/azure-amqp-common-go/sas"
 	"github.com/Azure/azure-event-hubs-go"
+	"github.com/opentracing/opentracing-go"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/opentracing/opentracing-go"
 )
 
 func init() {
@@ -32,7 +32,7 @@ var (
 			return checkAuthFlags()
 		},
 		Run: func(cmd *cobra.Command, args []string) {
-			provider, err := sas.NewTokenProvider(sas.TokenProviderWithNamespaceAndKey(namespace, sasKeyName, sasKey))
+			provider, err := sas.NewTokenProvider(sas.TokenProviderWithKey(sasKeyName, sasKey))
 			if err != nil {
 				log.Error(err)
 				return
