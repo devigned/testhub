@@ -56,7 +56,6 @@ var (
 
 				ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 				span, ctx := opentracing.StartSpanFromContext(ctx, "cmd_send")
-				span.SetTag("martin", "foo bazz")
 				err = hub.Send(ctx, event)
 				if err != nil {
 					log.Errorln(fmt.Sprintf("failed sending idx: %d", i), err)
