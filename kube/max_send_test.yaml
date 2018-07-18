@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: max_send_test
+  labels:
+    app: max_send_test
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: max_send_test
+  template:
+    metadata:
+      labels:
+          app: max_send_test
+    spec:
+      containers:
+        - name: testhub
+          image: devigned:testhub
+          command: ["testhub"]
+          args: ["max-send-test", "--connStr='$(EVENTHUB_CONNECTION_STRING)'"]
+          env:
+            - name: EVENTHUB_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: go-0-3627d-1
+                  key: connStr
+

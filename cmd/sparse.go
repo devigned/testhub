@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"context"
-	"math/rand"
+		"math/rand"
 	"os"
 	"os/signal"
 	"reflect"
@@ -12,7 +12,7 @@ import (
 	"github.com/Azure/azure-amqp-common-go/sas"
 	"github.com/Azure/azure-amqp-common-go/uuid"
 	"github.com/Azure/azure-event-hubs-go"
-	log "github.com/sirupsen/logrus"
+		log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -41,40 +41,64 @@ func newUniformDistributedPeriodicSender(maxSeconds int, namespace, hubName stri
 func (u *uniformDistributedPeriodicSender) Run(ctx context.Context, errChan chan error) {
 	defer close(errChan)
 
+	time.Sleep(20 * time.Second) // initial delay to wait for listening to begin
+
 	for {
 		select {
 		case <-ctx.Done():
 			return
 		default:
-			delay := time.Duration(rand.Intn(u.maxSeconds)) * time.Second
-			time.Sleep(delay)
-
-			hub, err := eventhub.NewHub(u.namespace, u.hubName, u.tokenProvider, eventhub.HubWithEnvironment(environment()))
-			if err != nil {
-				errChan <- err
-				return
-			}
-
-			id, err := uuid.NewV4()
-			if err != nil {
-				errChan <- err
-				return
-			}
-			event := eventhub.NewEvent([]byte(id.String()))
-			event.ID = id.String()
-			err = hub.Send(ctx, event)
-			if err != nil {
-				errChan <- err
-				return
-			}
-			log.Printf("Sent: %q", event.ID)
-			err = hub.Close(ctx)
+			// send a pair of messages on the same link spread across a variable amount of time
+			err := u.sendPair(ctx)
 			if err != nil {
 				errChan <- err
 				return
 			}
 		}
 	}
+}
+
+func (u *uniformDistributedPeriodicSender) sendPair(ctx context.Context) error {
+	// send a pair of messages on the same link spread across a variable amount of time
+	hub, err := eventhub.NewHub(u.namespace, u.hubName, u.tokenProvider, eventhub.HubWithEnvironment(environment()))
+	if err != nil {
+		return err
+	}
+
+	err = u.send(ctx, hub)
+	if err != nil {
+		return err
+	}
+
+	delay := time.Duration(rand.Intn(u.maxSeconds)) * time.Second
+	log.Printf("next send at: %q", time.Now().Add(delay).Format("2006-01-02 15:04:05"))
+	time.Sleep(delay)
+
+	err = u.send(ctx, hub)
+	if err != nil {
+		return err
+	}
+
+	err = hub.Close(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u *uniformDistributedPeriodicSender) send(ctx context.Context, hub *eventhub.Hub) error {
+	id, err := uuid.NewV4()
+	if err != nil {
+		return err
+	}
+	event1 := eventhub.NewEvent([]byte(id.String()))
+	event1.ID = id.String()
+	err = hub.Send(ctx, event1)
+	if err != nil {
+		return err
+	}
+	log.Printf("Sent: %q", event1.ID)
+	return nil
 }
 
 var (
@@ -125,7 +149,8 @@ var (
 				runCancel()
 				break
 			case err := <-errChan:
-				log.Error(err, "failed due to error")
+				log.Error(err)
+				log.Error(runCtx.Err())
 				runCancel()
 				break
 			}
@@ -134,8 +159,6 @@ var (
 )
 
 func listenToAll(ctx context.Context, hub *eventhub.Hub, handler eventhub.Handler, errorChan chan error) {
-	defer close(errorChan)
-
 	runtimeCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
@@ -167,7 +190,8 @@ func listenToAll(ctx context.Context, hub *eventhub.Hub, handler eventhub.Handle
 	}
 	cases = append(cases, reflect.SelectCase{Dir: reflect.SelectRecv, Chan: reflect.ValueOf(ctx.Done())})
 	log.Println("listening...")
-	_, _, _ = reflect.Select(cases)
+	chosen, recv, ok := reflect.Select(cases)
+	log.Println(chosen, recv, ok)
 	log.Println("done listening")
 	return
 }

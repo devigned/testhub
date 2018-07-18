@@ -26,7 +26,8 @@
 
 [[constraint]]
   name = "github.com/Azure/azure-event-hubs-go"
-  version = "0.4"
+#  version = "0.4"
+  branch = "robust"
 
 [[constraint]]
   name = "github.com/Azure/go-autorest"
