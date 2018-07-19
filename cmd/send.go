@@ -14,15 +14,21 @@ import (
 )
 
 func init() {
-	sendCmd.Flags().IntVar(&messageCount, "msg-count", 10, "number of messages to send")
-	sendCmd.Flags().IntVar(&messageSize, "msg-size", 256, "size in bytes of each message")
+	sendCmd.Flags().IntVar(&sendParams.messageCount, "msg-count", 10, "number of messages to send")
+	sendCmd.Flags().IntVar(&sendParams.messageSize, "msg-size", 256, "size in bytes of each message")
 	rootCmd.AddCommand(sendCmd)
 }
 
-var (
-	messageCount, messageSize int
+type (
+	SendParams struct {
+		messageSize  int
+		messageCount int
+	}
+)
 
-	sendCmd = &cobra.Command{
+var (
+	sendParams SendParams
+	sendCmd    = &cobra.Command{
 		Use:   "send",
 		Short: "Send messages to an Event Hub",
 		Args: func(cmd *cobra.Command, args []string) error {
@@ -43,10 +49,10 @@ var (
 				return
 			}
 
-			log.Println(fmt.Sprintf("attempting to send %d messages", messageCount))
+			log.Println(fmt.Sprintf("attempting to send %d messages", sendParams.messageCount))
 			sentMsgs := 0
-			for i := 0; i < messageCount; i++ {
-				data := make([]byte, messageSize)
+			for i := 0; i < sendParams.messageCount; i++ {
+				data := make([]byte, sendParams.messageSize)
 				_, err := rand.Read(data)
 				if err != nil {
 					log.Errorln("unable to generate random bits for message")

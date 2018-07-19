@@ -27,7 +27,7 @@
     ".",
     "atom"
   ]
-  revision = "286bf0c63f4f547d2ad797ab406901b9faf017ee"
+  revision = "bd2438a5dd934cacf0051ffe870e6726b77838e0"
 
 [[projects]]
   name = "github.com/Azure/azure-sdk-for-go"
@@ -56,6 +56,12 @@
   name = "github.com/beorn7/perks"
   packages = ["quantile"]
   revision = "3a771d992973f24aa725d07868b467d1ddfceafb"
+
+[[projects]]
+  name = "github.com/cloudflare/cfssl"
+  packages = ["log"]
+  revision = "5d63dbd981b5c408effbb58c442d54761ff94fbd"
+  version = "1.3.2"
 
 [[projects]]
   branch = "master"
@@ -206,7 +212,7 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = ["context"]
-  revision = "8887df42c721e930089d31b28391090a10a497d7"
+  revision = "81d44fd177a98d09fe3bc40a5a78d495d3f042ea"
 
 [[projects]]
   branch = "master"
@@ -229,6 +235,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3661411eff67404065258cb994571144a978f674a4335b21e9a60edd555c0687"
+  inputs-digest = "a0aa728c281d063c58e0d43b643a68f3641dc792e4b3bc29fb7791bbb7c62dba"
   solver-name = "gps-cdcl"
   solver-version = 1

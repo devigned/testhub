@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"math/rand"
 	"os"
 	"os/signal"
@@ -17,7 +16,8 @@ import (
 )
 
 func init() {
-	maxSendTestCmd.Flags().IntVar(&msParams.messageSize, "message-size", 1024*1000, "size of messages")
+	maxSendTestCmd.Flags().IntVar(&msParams.partitionCount, "partition-count", 4, "number of partitions if creating a new hub")
+	maxSendTestCmd.Flags().IntVar(&msParams.messageSize, "message-size", 1024, "size of messages")
 	maxSendTestCmd.Flags().IntVar(&msParams.numberOfSenders, "num-senders", 10, "number of senders")
 	rootCmd.AddCommand(maxSendTestCmd)
 }
@@ -33,6 +33,7 @@ type (
 	maxSendParams struct {
 		messageSize     int
 		numberOfSenders int
+		partitionCount  int
 	}
 )
 
@@ -63,17 +64,29 @@ func (s *repeatSender) Run(ctx context.Context, sentChan chan string, errChan ch
 				return
 			}
 
-			data := make([]byte, messageSize)
-			_, _ = rand.Read(data)
-			event := eventhub.NewEvent(data)
-			event.ID = id.String()
-			err = hub.Send(ctx, event)
+			batchSize := 256000 / msParams.messageSize
+			events := make([]*eventhub.Event, batchSize)
+			for i := 0; i < batchSize; i++ {
+				data := make([]byte, msParams.messageSize)
+				_, _ = rand.Read(data)
+				event := eventhub.NewEvent(data)
+				event.ID = id.String()
+				events[i] = event
+			}
+
+			batch := &eventhub.EventBatch{
+				Events: events,
+			}
+			err = hub.SendBatch(ctx, batch)
 
 			if err != nil {
 				errChan <- err
 				return
 			}
-			sentChan <- id.String()
+
+			for i := 0; i < batchSize; i++ {
+				sentChan <- events[i].ID
+			}
 		}
 	}
 }
@@ -133,7 +146,7 @@ var (
 					return
 				case _ = <-sentChan:
 					count++
-					if count % 10000 == 0 {
+					if count%10000 == 0 {
 						log.Printf("Sent: %d", count)
 					}
 				}
@@ -155,13 +168,13 @@ func ensureProvisioned(ctx context.Context) (*eventhub.HubEntity, error) {
 	}
 
 	for _, hub := range hubs {
-		fmt.Printf("%+v", hub)
+		//fmt.Printf("%+v", hub)
 		if hub.Name == hubName {
 			return hub, nil
 		}
 	}
 
 	return hm.Put(ctx, hubName, eventhub.HubDescription{
-		PartitionCount: to.Int32Ptr(128),
+		PartitionCount: to.Int32Ptr(int32(msParams.partitionCount)),
 	})
 }
