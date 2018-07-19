@@ -19,7 +19,12 @@ spec:
           image: devigned/testhub:latest
           imagePullPolicy: Always
           command: ["./testhub"]
-          args: ["max-send-test", "--conn-str=$(EVENTHUB_CONNECTION_STRING)", "--num-senders", "40"]
+          args: [
+            "max-send-test",
+            "--conn-str=$(EVENTHUB_CONNECTION_STRING)",
+            "--num-senders", "40",
+            "--partition-count", "128"
+          ]
           env:
             - name: EVENTHUB_CONNECTION_STRING
               valueFrom:
