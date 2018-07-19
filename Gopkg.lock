@@ -27,7 +27,7 @@
     ".",
     "atom"
   ]
-  revision = "db370f13941ba5e0b5f0906b2a29f0cd05d3df54"
+  revision = "fd5ea63e9f2169540b15e204f0083b59665d7db1"
 
 [[projects]]
   name = "github.com/Azure/azure-sdk-for-go"
@@ -212,7 +212,7 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = ["context"]
-  revision = "81d44fd177a98d09fe3bc40a5a78d495d3f042ea"
+  revision = "a680a1efc54dd51c040b3b5ce4939ea3cf2ea0d1"
 
 [[projects]]
   branch = "master"
