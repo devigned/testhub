@@ -27,7 +27,7 @@
     ".",
     "atom"
   ]
-  revision = "7ce508b4f42b7f7dfdba669bf5f840234508efc8"
+  revision = "286bf0c63f4f547d2ad797ab406901b9faf017ee"
 
 [[projects]]
   name = "github.com/Azure/azure-sdk-for-go"
@@ -229,6 +229,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "add5cd60335a0490893af88054b164b2f11eb55cd13b7744ce0469ba3a073f75"
+  inputs-digest = "3661411eff67404065258cb994571144a978f674a4335b21e9a60edd555c0687"
   solver-name = "gps-cdcl"
   solver-version = 1

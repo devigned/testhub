@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"math/rand"
 	"os"
 	"os/signal"
@@ -10,6 +11,7 @@ import (
 	"github.com/Azure/azure-amqp-common-go/sas"
 	"github.com/Azure/azure-amqp-common-go/uuid"
 	"github.com/Azure/azure-event-hubs-go"
+	"github.com/Azure/go-autorest/autorest/to"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -98,6 +100,12 @@ var (
 			runCtx, runCancel := context.WithCancel(context.Background())
 			defer runCancel()
 
+			_, err = ensureProvisioned(runCtx)
+			if err != nil {
+				log.Error(err)
+				return
+			}
+
 			errChan := make(chan error, 1)
 			defer close(errChan)
 			sentChan := make(chan string, 10)
@@ -134,3 +142,26 @@ var (
 		},
 	}
 )
+
+func ensureProvisioned(ctx context.Context) (*eventhub.HubEntity, error) {
+	hm, err := eventhub.NewHubManagerFromConnectionString(connStr)
+	if err != nil {
+		return nil, err
+	}
+
+	hubs, err := hm.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, hub := range hubs {
+		fmt.Printf("%+v", hub)
+		if hub.Name == hubName {
+			return hub, nil
+		}
+	}
+
+	return hm.Put(ctx, hubName, eventhub.HubDescription{
+		PartitionCount: to.Int32Ptr(128),
+	})
+}

@@ -69,6 +69,10 @@ func checkAuthFlags() error {
 	if sasKeyName == "" {
 		return errors.New("key-name is required")
 	}
+
+	if connStr == "" {
+		connStr = fmt.Sprintf("Endpoint=sb://%s.servicebus.windows.net/;SharedAccessKeyName=%s;SharedAccessKey=%s;EntityPath=%s", namespace, sasKeyName, sasKey, hubName)
+	}
 	return nil
 }
 
