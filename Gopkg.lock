@@ -27,7 +27,7 @@
     ".",
     "atom"
   ]
-  revision = "744138005f8bcab29d15e40c225d87be96336810"
+  revision = "bd384a17db8a63f8ccf041ad6b166fe041068d54"
 
 [[projects]]
   name = "github.com/Azure/azure-sdk-for-go"
