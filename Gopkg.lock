@@ -25,18 +25,33 @@
   name = "github.com/Azure/azure-event-hubs-go"
   packages = [
     ".",
-    "atom"
+    "atom",
+    "eph",
+    "storage"
   ]
   revision = "f3bfa91bae572fb2e83f94d1da4878ddff5e3245"
+
+[[projects]]
+  name = "github.com/Azure/azure-pipeline-go"
+  packages = ["pipeline"]
+  revision = "7571e8eb0876932ab505918ff7ed5107773e5ee2"
+  version = "0.1.7"
 
 [[projects]]
   name = "github.com/Azure/azure-sdk-for-go"
   packages = [
     "services/eventhub/mgmt/2017-04-01/eventhub",
+    "services/storage/mgmt/2017-10-01/storage",
     "version"
   ]
   revision = "7971189ecf5a584b9211f2527737f94bb979644e"
   version = "v17.4.0"
+
+[[projects]]
+  name = "github.com/Azure/azure-storage-blob-go"
+  packages = ["2016-05-31/azblob"]
+  revision = "66ba96e49ebbdc3cd26970c6c675c906d304b5e2"
+  version = "0.1.4"
 
 [[projects]]
   name = "github.com/Azure/go-autorest"
@@ -46,10 +61,11 @@
     "autorest/azure",
     "autorest/date",
     "autorest/to",
-    "autorest/validation"
+    "autorest/validation",
+    "version"
   ]
-  revision = "894522ed0d5cab8d143c39116ddc5f605a1931ee"
-  version = "v10.13.0"
+  revision = "bca49d5b51a50dc5bb17bbf6204c711c6dbded06"
+  version = "v10.14.0"
 
 [[projects]]
   branch = "master"
@@ -151,8 +167,8 @@
 [[projects]]
   name = "github.com/sirupsen/logrus"
   packages = ["."]
-  revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
-  version = "v1.0.5"
+  revision = "3e01752db0189b9157070a0e1668a620f9a85da2"
+  version = "v1.0.6"
 
 [[projects]]
   name = "github.com/spf13/cobra"
@@ -235,6 +251,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a0aa728c281d063c58e0d43b643a68f3641dc792e4b3bc29fb7791bbb7c62dba"
+  inputs-digest = "6e66b270f965a1231e6e747500655bd59b227e5609723ca358797f0a8c5b2ad3"
   solver-name = "gps-cdcl"
   solver-version = 1

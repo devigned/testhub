@@ -19,6 +19,7 @@ func init() {
 	maxSendTestCmd.Flags().IntVar(&msParams.partitionCount, "partition-count", 4, "number of partitions if creating a new hub")
 	maxSendTestCmd.Flags().IntVar(&msParams.messageSize, "message-size", 1024, "size of messages")
 	maxSendTestCmd.Flags().IntVar(&msParams.numberOfSenders, "num-senders", 10, "number of senders")
+	maxSendTestCmd.Flags().BoolVar(&msParams.roundRobin, "round-robin", true, "send events to all partitions -- if false, events will be sent to a single partition")
 	rootCmd.AddCommand(maxSendTestCmd)
 }
 
@@ -34,6 +35,7 @@ type (
 		messageSize     int
 		numberOfSenders int
 		partitionCount  int
+		roundRobin      bool
 	}
 )
 
@@ -47,7 +49,11 @@ func newRepeatSender(messageSize int, namespace, hubName string, provider auth.T
 }
 
 func (s *repeatSender) Run(ctx context.Context, sentChan chan string, errChan chan error) {
-	hub, err := eventhub.NewHub(s.namespace, s.hubName, s.tokenProvider, eventhub.HubWithEnvironment(environment()))
+	opts := []eventhub.HubOption{eventhub.HubWithEnvironment(environment())}
+	if !msParams.roundRobin {
+		opts = append(opts, eventhub.HubWithPartitionedSender("0"))
+	}
+	hub, err := eventhub.NewHub(s.namespace, s.hubName, s.tokenProvider, opts...)
 	if err != nil {
 		errChan <- err
 		return
@@ -77,6 +83,7 @@ func (s *repeatSender) Run(ctx context.Context, sentChan chan string, errChan ch
 			batch := &eventhub.EventBatch{
 				Events: events,
 			}
+
 			err = hub.SendBatch(ctx, batch)
 
 			if err != nil {

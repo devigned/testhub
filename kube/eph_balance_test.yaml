@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ephbalancetest
+  labels:
+    app: ephbalancetest
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ephbalancetest
+  template:
+    metadata:
+      labels:
+        app: ephbalancetest
+    spec:
+      containers:
+      - name: testhub
+        image: devigned/testhub:latest
+        imagePullPolicy: Always
+        command: ["./testhub"]
+        args: [
+          "max-send-test",
+          "--conn-str=$(EVENTHUB_CONNECTION_STRING)",
+          "--storage-account-name=$(EPH_BALANCE_ACCOUNT_NAME)",
+          "--storage-account-key=$(EPH_BALANCE_ACCOUNT_KEY)",
+        ]
+        env:
+        - name: EVENTHUB_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: go-0-3627d-1
+              key: connStr
+        - name: EPH_BALANCE_ACCOUNT_NAME
+          valueFrom:
+            secretKeyRef:
+              name: ephbalancestorageaccount
+              key: name
+        - name: EPH_BALANCE_ACCOUNT_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ephbalancestorageaccount
+              key: key
+
