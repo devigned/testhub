@@ -20,7 +20,7 @@ spec:
         imagePullPolicy: Always
         command: ["./testhub"]
         args: [
-          "max-send-test",
+          "eph-balance-test",
           "--conn-str=$(EVENTHUB_CONNECTION_STRING)",
           "--storage-account-name=$(EPH_BALANCE_ACCOUNT_NAME)",
           "--storage-account-key=$(EPH_BALANCE_ACCOUNT_KEY)",
