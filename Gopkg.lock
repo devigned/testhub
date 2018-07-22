@@ -29,7 +29,7 @@
     "eph",
     "storage"
   ]
-  revision = "f3bfa91bae572fb2e83f94d1da4878ddff5e3245"
+  revision = "4e1c918bd80a65d1c06df32ca76ba6f3c393db8e"
 
 [[projects]]
   name = "github.com/Azure/azure-pipeline-go"

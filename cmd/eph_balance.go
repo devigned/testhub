@@ -7,8 +7,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/Azure/azure-amqp-common-go/sas"
-	"github.com/Azure/azure-event-hubs-go/eph"
+		"github.com/Azure/azure-event-hubs-go/eph"
 	"github.com/Azure/azure-event-hubs-go/storage"
 	"github.com/Azure/azure-storage-blob-go/2016-05-31/azblob"
 	"github.com/Azure/go-autorest/autorest/azure"
@@ -53,16 +52,10 @@ var (
 			return checkAuthFlags()
 		},
 		Run: func(cmd *cobra.Command, args []string) {
-			provider, err := sas.NewTokenProvider(sas.TokenProviderWithKey(sasKeyName, sasKey))
-			if err != nil {
-				log.Error(err)
-				return
-			}
-
 			runCtx, runCancel := context.WithCancel(context.Background())
 			defer runCancel()
 
-			_, err = ensureProvisioned(runCtx)
+			_, err := ensureProvisioned(runCtx)
 			if err != nil {
 				log.Error(err)
 				return
@@ -75,7 +68,7 @@ var (
 				return
 			}
 
-			host, err := eph.New(runCtx, namespace, hubName, provider, checkpointLeaser, checkpointLeaser)
+			host, err := eph.NewFromConnectionString(runCtx, connStr, checkpointLeaser, checkpointLeaser)
 			if err != nil {
 				log.Error(err)
 				return
