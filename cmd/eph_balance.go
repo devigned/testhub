@@ -17,9 +17,9 @@ import (
 )
 
 func init() {
-	maxSendTestCmd.Flags().StringVar(&ephBalanceParams.storageAccountName, "storage-account-name", "", "Azure Storage account name to use for blob based leader election")
-	maxSendTestCmd.Flags().StringVar(&ephBalanceParams.storageAccountKey, "storage-account-key", "", "Azure Storage account key to use for blob based leader election")
-	maxSendTestCmd.Flags().StringVar(&ephBalanceParams.storageContainer, "storage-container", "ephbalancetest", "Azure Storage container name for storing blobs")
+	ephBalanceTestCmd.Flags().StringVar(&ephBalanceParams.storageAccountName, "storage-account-name", "", "Azure Storage account name to use for blob based leader election")
+	ephBalanceTestCmd.Flags().StringVar(&ephBalanceParams.storageAccountKey, "storage-account-key", "", "Azure Storage account key to use for blob based leader election")
+	ephBalanceTestCmd.Flags().StringVar(&ephBalanceParams.storageContainer, "storage-container", "ephbalancetest", "Azure Storage container name for storing blobs")
 	rootCmd.AddCommand(ephBalanceTestCmd)
 }
 
