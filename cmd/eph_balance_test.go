@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"os/signal"
+	"time"
 
 	"github.com/Azure/azure-amqp-common-go/sas"
 	"github.com/Azure/azure-event-hubs-go/eph"
@@ -85,6 +86,20 @@ var (
 				log.Error(err)
 				return
 			}
+
+			go func() {
+				// report partition processing for the host
+				for {
+					time.Sleep(30 * time.Second)
+					select {
+					case <-runCtx.Done():
+						return
+					default:
+						partitionIDs := host.PartitionIDsBeingProcessed()
+						log.Infof("number of partitions: %d, 	%+v", len(partitionIDs), partitionIDs)
+					}
+				}
+			}()
 
 			// Wait for a signal to quit:
 			signalChan := make(chan os.Signal, 1)
