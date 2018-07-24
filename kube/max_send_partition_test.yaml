@@ -18,6 +18,7 @@ spec:
         - name: testhub
           image: devigned/testhub:latest
           imagePullPolicy: Always
+          restartPolicy: Never
           command: ["./testhub"]
           args: [
             "max-send-test",
