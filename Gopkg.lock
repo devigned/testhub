@@ -29,7 +29,7 @@
     "eph",
     "storage"
   ]
-  revision = "4e1c918bd80a65d1c06df32ca76ba6f3c393db8e"
+  revision = "6c5af522471dec4a703e04b0f97a20bed887aaba"
 
 [[projects]]
   name = "github.com/Azure/azure-pipeline-go"
@@ -222,7 +222,7 @@
     "pkcs12/internal/rc2",
     "ssh/terminal"
   ]
-  revision = "a2144134853fc9a27a7b1e3eb4f19f1a76df13c9"
+  revision = "c126467f60eb25f8f27e5a981f32a87e3965053f"
 
 [[projects]]
   branch = "master"

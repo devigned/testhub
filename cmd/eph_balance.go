@@ -5,9 +5,11 @@ import (
 	"errors"
 	"os"
 	"os/signal"
+	"sort"
+	"strconv"
 	"time"
 
-		"github.com/Azure/azure-event-hubs-go/eph"
+	"github.com/Azure/azure-event-hubs-go/eph"
 	"github.com/Azure/azure-event-hubs-go/storage"
 	"github.com/Azure/azure-storage-blob-go/2016-05-31/azblob"
 	"github.com/Azure/go-autorest/autorest/azure"
@@ -82,6 +84,7 @@ var (
 
 			go func() {
 				// report partition processing for the host
+				lastTracked := make([]int, 0)
 				for {
 					time.Sleep(30 * time.Second)
 					select {
@@ -89,7 +92,20 @@ var (
 						return
 					default:
 						partitionIDs := host.PartitionIDsBeingProcessed()
-						log.Infof("number of partitions: %d, 	%+v", len(partitionIDs), partitionIDs)
+						ints := make([]int, len(partitionIDs))
+						for idx, id := range partitionIDs {
+							i, err := strconv.Atoi(id)
+							if err != nil {
+								log.Error(err)
+								return
+							}
+							ints[idx] = i
+						}
+						sort.Ints(ints)
+						log.Infof("number of partitions: %d, %+v", len(partitionIDs), ints)
+						added, removed := intDiff(lastTracked, ints)
+						log.Infof("added: %+v; removed: %+v", added, removed)
+						lastTracked = ints
 					}
 				}
 			}()
@@ -108,3 +124,27 @@ var (
 		},
 	}
 )
+
+func intDiff(original []int, updated []int) (added []int, removed []int) {
+	originalMap := make(map[int]int)
+	for i := 0; i < len(original); i++ {
+		originalMap[original[i]] = original[i]
+	}
+
+	updatedMap := make(map[int]int)
+	for i := 0; i < len(updated); i++ {
+		updatedMap[updated[i]] = updated[i]
+		if _, ok := originalMap[updated[i]]; !ok {
+			// if not in the original, then you were added
+			added = append(added, updated[i])
+		}
+	}
+
+	for i := 0; i < len(original); i++ {
+		if _, ok := updatedMap[original[i]]; !ok {
+			// if not in the original, then you were added
+			removed = append(removed, original[i])
+		}
+	}
+	return added, removed
+}
