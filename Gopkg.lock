@@ -29,7 +29,7 @@
     "eph",
     "storage"
   ]
-  revision = "6b5aaf1d095ec3300517a10a2eb7597fcdc0177f"
+  revision = "88846e5ab8d19a4aa56de2bd5237444b2c0b8b7c"
 
 [[projects]]
   name = "github.com/Azure/azure-pipeline-go"
@@ -162,7 +162,7 @@
     "nfs",
     "xfs"
   ]
-  revision = "ae68e2d4c00fed4943b5f6698d504a5fe083da8a"
+  revision = "05ee40e3a273f7245e8777337fc7b46e533a9a92"
 
 [[projects]]
   name = "github.com/sirupsen/logrus"
@@ -228,7 +228,7 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = ["context"]
-  revision = "a680a1efc54dd51c040b3b5ce4939ea3cf2ea0d1"
+  revision = "3673e40ba22529d22c3fd7c93e97b0ce50fa7bdd"
 
 [[projects]]
   branch = "master"
@@ -237,7 +237,7 @@
     "unix",
     "windows"
   ]
-  revision = "ac767d655b305d4e9612f5f6e33120b9176c4ad4"
+  revision = "e072cadbbdc8dd3d3ffa82b8b4b9304c261d9311"
 
 [[projects]]
   name = "pack.ag/amqp"
