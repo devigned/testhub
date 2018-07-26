@@ -16,13 +16,13 @@ spec:
     spec:
       containers:
         - name: testhub
-          image: devigned/testhub:v0.0.2
+          image: devigned/testhub:v0.0.4
           imagePullPolicy: Always
           command: ["./testhub"]
           args: [
             "max-send-test",
             "--conn-str=$(EVENTHUB_CONNECTION_STRING)",
-            "--num-senders", "10",
+            "--num-senders", "3",
             "--partition-count", "128"
           ]
           env:
