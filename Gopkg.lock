@@ -29,7 +29,7 @@
     "eph",
     "storage"
   ]
-  revision = "bcffcd40d7001f767d5c1b344b8f42e871f71f7f"
+  revision = "68cc8143cbaf43455a2559ebc355a8fed16c4a7c"
 
 [[projects]]
   name = "github.com/Azure/azure-pipeline-go"
@@ -44,8 +44,8 @@
     "services/storage/mgmt/2017-10-01/storage",
     "version"
   ]
-  revision = "7971189ecf5a584b9211f2527737f94bb979644e"
-  version = "v17.4.0"
+  revision = "520918e6c8e8e1064154f51d13e02fad92b287b8"
+  version = "v19.0.0"
 
 [[projects]]
   name = "github.com/Azure/azure-storage-blob-go"
@@ -62,10 +62,11 @@
     "autorest/date",
     "autorest/to",
     "autorest/validation",
+    "logger",
     "version"
   ]
-  revision = "bca49d5b51a50dc5bb17bbf6204c711c6dbded06"
-  version = "v10.14.0"
+  revision = "dd94e014aaf16d1df746762e392aa201c1b4c461"
+  version = "v10.15.0"
 
 [[projects]]
   branch = "master"
@@ -237,7 +238,7 @@
     "unix",
     "windows"
   ]
-  revision = "e072cadbbdc8dd3d3ffa82b8b4b9304c261d9311"
+  revision = "10b189e7aa37dd026e4c1c16d84c6515a393f8ed"
 
 [[projects]]
   name = "pack.ag/amqp"
