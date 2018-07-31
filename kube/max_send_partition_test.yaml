@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: testhub
-          image: devigned/testhub:v0.0.6
+          image: devigned/testhub:v0.0.8
           imagePullPolicy: Always
           command: ["./testhub"]
           args: [
