@@ -22,7 +22,7 @@ spec:
           args: [
             "max-send-test",
             "--conn-str=$(EVENTHUB_CONNECTION_STRING)",
-            "--num-senders", "1",
+            "--num-senders", "10",
             "--partition-count", "128"
           ]
           env:
