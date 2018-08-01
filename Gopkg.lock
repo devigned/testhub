@@ -298,14 +298,14 @@
 
 [[projects]]
   branch = "deadlock"
-  digest = "1:5b1efd1f5f088e46a7ab7f655f83bc35ffa79f97b8f407d47f81e68cea6727d4"
+  digest = "1:cd23854323f6ed40447511c6827c699c89cc38c58e0ba9d9fe18e5b6d562e90c"
   name = "pack.ag/amqp"
   packages = [
     ".",
     "internal/testconn",
   ]
   pruneopts = "UT"
-  revision = "0901bb48d0c02803e9079582ebf3ef800d04de9a"
+  revision = "befd88a7d3303a59486a803d27276b8e3b333e1c"
   source = "github.com/devigned/amqp"
 
 [solve-meta]
