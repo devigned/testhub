@@ -41,6 +41,11 @@
   name = "github.com/spf13/cobra"
   version = "0"
 
+[[override]]
+  name = "pack.ag/amqp"
+  branch = "deadlock"
+  source = "github.com/devigned/amqp"
+
 [prune]
   go-tests = true
   unused-packages = true
