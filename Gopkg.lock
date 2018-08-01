@@ -29,7 +29,7 @@
     "eph",
     "storage"
   ]
-  revision = "92639be53271ed6778b3524872c95b31c84a55a1"
+  revision = "b9fa11fa9e77fa8d18ddc3ad326a1c2a4f3945a9"
 
 [[projects]]
   name = "github.com/Azure/azure-pipeline-go"
@@ -152,7 +152,7 @@
     "internal/bitbucket.org/ww/goautoneg",
     "model"
   ]
-  revision = "7600349dcfe1abd18d72d3a1770870d9800a7801"
+  revision = "c7de2306084e37d54b8be01f3541a8464345e9a5"
 
 [[projects]]
   branch = "master"
@@ -246,8 +246,8 @@
     ".",
     "internal/testconn"
   ]
-  revision = "4b9cda815aa2612789543484d4e29855c791eeeb"
-  version = "v0.7.0"
+  revision = "0ae7451def47720210ade4ddde32a1058d6e9a4c"
+  version = "v0.7.1"
 
 [solve-meta]
   analyzer-name = "dep"
