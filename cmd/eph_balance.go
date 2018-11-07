@@ -11,7 +11,7 @@ import (
 
 	"github.com/Azure/azure-event-hubs-go/eph"
 	"github.com/Azure/azure-event-hubs-go/storage"
-	"github.com/Azure/azure-storage-blob-go/2016-05-31/azblob"
+	"github.com/Azure/azure-storage-blob-go/azblob"
 	"github.com/Azure/go-autorest/autorest/azure"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -63,7 +63,12 @@ var (
 				return
 			}
 
-			cred := azblob.NewSharedKeyCredential(ephBalanceParams.storageAccountName, ephBalanceParams.storageAccountKey)
+			cred, err := azblob.NewSharedKeyCredential(ephBalanceParams.storageAccountName, ephBalanceParams.storageAccountKey)
+			if err != nil {
+				log.Error(err)
+				return
+			}
+
 			checkpointLeaser, err := storage.NewStorageLeaserCheckpointer(cred, ephBalanceParams.storageAccountName, ephBalanceParams.storageContainer, azure.PublicCloud)
 			if err != nil {
 				log.Error(err)

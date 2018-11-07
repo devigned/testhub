@@ -10,7 +10,6 @@ import (
 	"github.com/Azure/azure-amqp-common-go/sas"
 	"github.com/Azure/azure-amqp-common-go/uuid"
 	"github.com/Azure/azure-event-hubs-go"
-	"github.com/Azure/go-autorest/autorest/to"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -181,7 +180,5 @@ func ensureProvisioned(ctx context.Context) (*eventhub.HubEntity, error) {
 		}
 	}
 
-	return hm.Put(ctx, hubName, eventhub.HubDescription{
-		PartitionCount: to.Int32Ptr(int32(msParams.partitionCount)),
-	})
+	return hm.Put(ctx, hubName, eventhub.HubWithPartitionCount(int32(msParams.partitionCount)))
 }
