@@ -22,15 +22,20 @@ type (
 		counter     int64
 		partitionID string
 	}
+
+	receiveParams struct {
+		showMessage  bool
+	}
 )
 
 func init() {
+	receiveCmd.Flags().BoolVarP(&params.showMessage, "show-message", "s", false, "show each message")
 	rootCmd.AddCommand(receiveCmd)
 }
 
 var (
 	mu sync.Mutex
-
+	params receiveParams
 	receiveCmd = &cobra.Command{
 		Use:   "receive",
 		Short: "Receive messages from an Event Hub",
@@ -107,5 +112,8 @@ func (m *messageHandler) handle(ctx context.Context, event *eventhub.Event) erro
 	atomic.AddInt64(&m.counter, 1)
 	msg := fmt.Sprintf("message count of %d for partition %q", m.counter, m.partitionID)
 	log.Println(msg)
+	if params.showMessage {
+		fmt.Println(string(event.Data))
+	}
 	return nil
 }
