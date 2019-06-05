@@ -3,7 +3,7 @@ package cmd
 import (
 	"context"
 
-	"github.com/Azure/azure-event-hubs-go"
+	"github.com/Azure/azure-event-hubs-go/v2"
 	"github.com/cloudflare/cfssl/log"
 	"github.com/spf13/cobra"
 )

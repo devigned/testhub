@@ -1,46 +1,70 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
+	_ "github.com/Azure/azure-event-hubs-go/v2"
+	_ "github.com/devigned/tab/opencensus"
+
+	"contrib.go.opencensus.io/exporter/jaeger"
+	"go.opencensus.io/trace"
+
 	"github.com/devigned/testhub/cmd"
-	"github.com/uber/jaeger-client-go"
-	"github.com/uber/jaeger-client-go/config"
-	jaegerlog "github.com/uber/jaeger-client-go/log"
-	"github.com/uber/jaeger-lib/metrics/prometheus"
 )
 
 func main() {
 	if os.Getenv("TRACING") == "true" {
-		// Sample configuration for testing. Use constant sampling to sample every trace
-		// and enable LogSpan to log every span via configured Logger.
-		cfg := config.Configuration{
-			Sampler: &config.SamplerConfig{
-				Type:  jaeger.SamplerTypeConst,
-				Param: 1,
-			},
-			Reporter: &config.ReporterConfig{
-				LocalAgentHostPort: "0.0.0.0:6831",
-			},
-		}
-
-		// Example logger and metrics factory. Use github.com/uber/jaeger-client-go/log
-		// and github.com/uber/jaeger-lib/metrics respectively to bind to real logging and metrics
-		// frameworks.
-		jLogger := jaegerlog.StdLogger
-		metricsFactory := prometheus.New()
-
-		closer, err := cfg.InitGlobalTracer(
-			"testhub",
-			config.Logger(jLogger),
-			config.Metrics(metricsFactory),
-		)
+		closer, err := initOpenCensus()
 		if err != nil {
-			panic(err)
+			fmt.Println(err)
+			return
 		}
-		defer closer.Close()
-
+		defer closer()
 	}
 
 	cmd.Execute()
 }
+
+func initOpenCensus() (func(), error) {
+	exporter, err := jaeger.NewExporter(jaeger.Options{
+		AgentEndpoint:     "localhost:6831",
+		CollectorEndpoint: "http://localhost:14268/api/traces",
+		Process: jaeger.Process{
+			ServiceName: "testhub",
+		},
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
+	trace.RegisterExporter(exporter)
+	return exporter.Flush, nil
+}
+
+//func initOpenTracing() (func(), error){
+//	// Sample configuration for testing. Use constant sampling to sample every trace
+//	// and enable LogSpan to log every span via configured Logger.
+//	cfg := config.Configuration{
+//		Sampler: &config.SamplerConfig{
+//			Type:  jaeger.SamplerTypeConst,
+//			Param: 1,
+//		},
+//		Reporter: &config.ReporterConfig{
+//			LocalAgentHostPort: "0.0.0.0:6831",
+//		},
+//	}
+//
+//	closer, err := cfg.InitGlobalTracer("testhub", config.Logger(jaegerlog.StdLogger))
+//	if err != nil {
+//		panic(err)
+//	}
+//
+//	defer func(){
+//		if err := closer.Close(); err != nil {
+//			fmt.Println("Error: ", err)
+//		}
+//	}()
+//}

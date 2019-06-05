@@ -6,12 +6,12 @@ import (
 	"os"
 	"os/signal"
 	"reflect"
-	"sync"
+	"strings"
 	"sync/atomic"
 	"time"
 
-	"github.com/Azure/azure-amqp-common-go/sas"
-	"github.com/Azure/azure-event-hubs-go"
+	"github.com/Azure/azure-amqp-common-go/v2/sas"
+	"github.com/Azure/azure-event-hubs-go/v2"
 	"github.com/opentracing/opentracing-go"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -24,18 +24,19 @@ type (
 	}
 
 	receiveParams struct {
-		showMessage  bool
+		showMessage   bool
+		fromBeginning bool
 	}
 )
 
 func init() {
 	receiveCmd.Flags().BoolVarP(&params.showMessage, "show-message", "s", false, "show each message")
+	receiveCmd.Flags().BoolVarP(&params.fromBeginning, "from-beginning", "b", false, "start from the beginning of the log")
 	rootCmd.AddCommand(receiveCmd)
 }
 
 var (
-	mu sync.Mutex
-	params receiveParams
+	params     receiveParams
 	receiveCmd = &cobra.Command{
 		Use:   "receive",
 		Short: "Receive messages from an Event Hub",
@@ -73,12 +74,20 @@ var (
 			closeHandles := make([]*eventhub.ListenerHandle, len(runtimeInfo.PartitionIDs))
 			for idx, partitionID := range runtimeInfo.PartitionIDs {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+				opts := []eventhub.ReceiveOption{
+					eventhub.ReceiveWithPrefetchCount(1000),
+				}
+
+				if !params.fromBeginning {
+					opts = append(opts, eventhub.ReceiveWithLatestOffset())
+				}
+
 				handle, err := hub.Receive(
 					ctx,
 					partitionID,
 					handlers[idx].handle,
-					eventhub.ReceiveWithPrefetchCount(1000),
-					eventhub.ReceiveWithLatestOffset())
+					opts...
+					)
 				cancel()
 				if err != nil {
 					log.Errorln(err)
@@ -98,7 +107,10 @@ var (
 			cases = append(cases, reflect.SelectCase{Dir: reflect.SelectRecv, Chan: reflect.ValueOf(signalChan)})
 			fmt.Println("=> ctrl+c to exit")
 			_, _, _ = reflect.Select(cases)
-			hub.Close(context.Background())
+			err = hub.Close(context.Background())
+			if err != nil {
+				fmt.Println(err)
+			}
 			return
 		},
 	}
@@ -108,12 +120,12 @@ func (m *messageHandler) handle(ctx context.Context, event *eventhub.Event) erro
 	span, ctx := opentracing.StartSpanFromContext(ctx, "cmd_handle")
 	defer span.Finish()
 
-	span.SetTag("martin", "hello world!")
 	atomic.AddInt64(&m.counter, 1)
-	msg := fmt.Sprintf("message count of %d for partition %q", m.counter, m.partitionID)
-	log.Println(msg)
-	if params.showMessage {
+	//msg := fmt.Sprintf("message count of %d for partition %q", m.counter, m.partitionID)
+	//log.Println(msg)
+	if params.showMessage && strings.HasSuffix(string(event.Data), "...}]}") {
 		fmt.Println(string(event.Data))
+		fmt.Println("")
 	}
 	return nil
 }

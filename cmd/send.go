@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Azure/azure-amqp-common-go/sas"
-	"github.com/Azure/azure-event-hubs-go"
+	"github.com/Azure/azure-amqp-common-go/v2/sas"
+	"github.com/Azure/azure-event-hubs-go/v2"
 	"github.com/opentracing/opentracing-go"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"

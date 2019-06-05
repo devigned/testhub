@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Azure/azure-event-hubs-go/eph"
-	"github.com/Azure/azure-event-hubs-go/storage"
+	"github.com/Azure/azure-event-hubs-go/v2/eph"
+	"github.com/Azure/azure-event-hubs-go/v2/storage"
 	"github.com/Azure/azure-storage-blob-go/azblob"
 	"github.com/Azure/go-autorest/autorest/azure"
 	log "github.com/sirupsen/logrus"

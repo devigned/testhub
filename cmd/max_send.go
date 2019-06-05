@@ -6,10 +6,10 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/Azure/azure-amqp-common-go/auth"
-	"github.com/Azure/azure-amqp-common-go/sas"
-	"github.com/Azure/azure-amqp-common-go/uuid"
-	"github.com/Azure/azure-event-hubs-go"
+	"github.com/Azure/azure-amqp-common-go/v2/auth"
+	"github.com/Azure/azure-amqp-common-go/v2/sas"
+	"github.com/Azure/azure-amqp-common-go/v2/uuid"
+	"github.com/Azure/azure-event-hubs-go/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -79,11 +79,7 @@ func (s *repeatSender) Run(ctx context.Context, sentChan chan string, errChan ch
 				events[i] = event
 			}
 
-			batch := &eventhub.EventBatch{
-				Events: events,
-			}
-
-			err = hub.SendBatch(ctx, batch)
+			err = hub.SendBatch(ctx, eventhub.NewEventBatchIterator(events...))
 
 			if err != nil {
 				errChan <- err

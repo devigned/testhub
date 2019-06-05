@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Azure/azure-amqp-common-go/conn"
+	"github.com/Azure/azure-amqp-common-go/v2/conn"
 	"github.com/Azure/go-autorest/autorest/azure"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"

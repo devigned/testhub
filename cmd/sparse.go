@@ -8,11 +8,12 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/Azure/azure-amqp-common-go/auth"
-	"github.com/Azure/azure-amqp-common-go/sas"
-	"github.com/Azure/azure-amqp-common-go/uuid"
-	"github.com/Azure/azure-event-hubs-go"
-		log "github.com/sirupsen/logrus"
+	"github.com/Azure/azure-amqp-common-go/v2/auth"
+	"github.com/Azure/azure-amqp-common-go/v2/sas"
+	"github.com/Azure/azure-amqp-common-go/v2/uuid"
+	"github.com/Azure/azure-event-hubs-go/v2"
+	"github.com/devigned/tab"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -59,14 +60,19 @@ func (u *uniformDistributedPeriodicSender) Run(ctx context.Context, errChan chan
 }
 
 func (u *uniformDistributedPeriodicSender) sendPair(ctx context.Context) error {
+	ctx, spanner := tab.StartSpan(ctx, "uniformDistributedPeriodicSender.sendPair")
+	defer spanner.End()
+
 	// send a pair of messages on the same link spread across a variable amount of time
 	hub, err := eventhub.NewHub(u.namespace, u.hubName, u.tokenProvider, eventhub.HubWithEnvironment(environment()))
 	if err != nil {
+		tab.For(ctx).Error(err)
 		return err
 	}
 
 	err = u.send(ctx, hub)
 	if err != nil {
+		tab.For(ctx).Error(err)
 		return err
 	}
 
@@ -76,11 +82,13 @@ func (u *uniformDistributedPeriodicSender) sendPair(ctx context.Context) error {
 
 	err = u.send(ctx, hub)
 	if err != nil {
+		tab.For(ctx).Error(err)
 		return err
 	}
 
 	err = hub.Close(ctx)
 	if err != nil {
+		tab.For(ctx).Error(err)
 		return err
 	}
 	return nil
@@ -123,9 +131,12 @@ var (
 			runCtx, runCancel := context.WithCancel(context.Background())
 			defer runCancel()
 
+			runCtx, spanner := tab.StartSpan(runCtx, "sparse-test")
+			defer spanner.End()
+
 			hub, err := eventhub.NewHub(namespace, hubName, provider, eventhub.HubWithEnvironment(environment()))
 			if err != nil {
-				log.Error(err)
+				tab.For(runCtx).Error(err)
 				return
 			}
 			defer hub.Close(runCtx)
@@ -149,8 +160,10 @@ var (
 				runCancel()
 				break
 			case err := <-errChan:
-				log.Error(err)
-				log.Error(runCtx.Err())
+				tab.For(runCtx).Error(err)
+				if runCtx.Err() != nil {
+					tab.For(runCtx).Error(runCtx.Err())
+				}
 				runCancel()
 				break
 			}
