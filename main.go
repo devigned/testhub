@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	_ "github.com/devigned/tab/opencensus"
 
 	"contrib.go.opencensus.io/exporter/jaeger"
 	"go.opencensus.io/trace"

@@ -5,7 +5,7 @@ go 1.12
 require (
 	contrib.go.opencensus.io/exporter/jaeger v0.1.0
 	github.com/Azure/azure-amqp-common-go/v2 v2.0.0-20190531181552-567e94ecda78
-	github.com/Azure/azure-event-hubs-go/v2 v2.0.0-20190605163458-f35f219595fd
+	github.com/Azure/azure-event-hubs-go/v2 v2.0.0-20190605215228-7a867288be46
 	github.com/Azure/azure-storage-blob-go v0.6.0
 	github.com/Azure/go-autorest v12.0.0+incompatible
 	github.com/cloudflare/cfssl v0.0.0-20181102015659-ea4033a214e7
