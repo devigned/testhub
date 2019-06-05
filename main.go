@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	_ "github.com/Azure/azure-event-hubs-go/v2"
-	_ "github.com/devigned/tab/opencensus"
 
 	"contrib.go.opencensus.io/exporter/jaeger"
 	"go.opencensus.io/trace"
